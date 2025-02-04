@@ -6,29 +6,24 @@ from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer  # NaN 처리용
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
-import matplotlib.pyplot as plt
-import platform
 
 import os
 import matplotlib.font_manager as fm
 
 @st.cache_data
 def fontRegistered():
-    font_dirs = [os.getcwd() + 'custom_fonts']
+    font_dirs = [os.getcwd() + '/custom_fonts']
     font_files = fm.findSystemFonts(fontpaths=font_dirs)
     for font_file in font_files:
         fm.fontManager.addfont(font_file)
     fm._load_fontmanager(try_read_cache=False)
 
 
-
-    #한글이면 폰트 설치 작업을 해줘야한다
-
-
-
 def main():
+    
     fontRegistered()
-    plt.rc('font',family='MaruBuri-Bold')
+    plt.rc('font', family='MaruBuri-Bold')
+
     st.title('K-Means Clustering App')
 
     # 1. CSV 파일 업로드
@@ -107,7 +102,7 @@ def main():
         # WCSS 그래프 출력
         fig1, ax = plt.subplots()
         ax.plot(range(1, max_k + 1), wcss, marker='o', linestyle='--', color='b')
-        ax.set_xlabel('클러스터 갯수')
+        ax.set_xlabel('Number of Clusters (k)')
         ax.set_ylabel('WCSS값')
         ax.set_title('앨보우메서드')
 
