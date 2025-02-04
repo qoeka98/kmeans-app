@@ -6,6 +6,15 @@ from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from sklearn.impute import SimpleImputer
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
+import platform
+
+if platform.system() == 'Windows':
+    plt.rcParams['font.family'] = 'Malgun Gothic'
+elif platform.system() == 'Linux':
+    plt.rcParams['font.family'] = 'NanumGothic'
+
+plt.rcParams['axes.unicode_minus'] = False
+
 import os
 import matplotlib.font_manager as fm
 
@@ -91,13 +100,13 @@ def main():
             wcss.append(kmeans.inertia_)
 
         # 📌 WCSS 그래프 출력 (한글 깨짐 방지)
-        fig, ax = plt.subplots()
-        ax.plot(range(1, max_k + 1), wcss, marker='o', linestyle='--', color='b')
+        fig = plt.figure()
+        plt.plot(range(1, max_k + 1), wcss, marker='o', linestyle='--', color='b')
 
         # ✅ 한글 깨짐 방지를 위한 폰트 직접 지정
-        ax.set_xlabel('클러스터 개수 (k)', fontsize=12, fontweight='bold')
-        ax.set_ylabel('WCSS 값', fontsize=12, fontweight='bold')
-        ax.set_title('엘보우 메서드', fontsize=14, fontweight='bold')
+        plt.xlabel('클러스터 개수 (k)')
+        plt.ylabel('WCSS 값')
+        plt.title('엘보우 메서드')
 
         st.pyplot(fig)
 
