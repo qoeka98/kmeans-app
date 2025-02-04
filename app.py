@@ -7,23 +7,36 @@ from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 
 import os
+import platform
 import matplotlib.font_manager as fm
 from matplotlib import rc
 
 plt.rcParams['axes.unicode_minus'] = False  # 마이너스 기호 깨짐 방지
 
+# 📌 OS별 기본 한글 폰트 지정
+def get_default_font():
+    system_name = platform.system()
+    if system_name == "Windows":
+        return "Malgun Gothic"
+    elif system_name == "Darwin":  # macOS
+        return "AppleGothic"
+    else:  # Linux (Ubuntu 등)
+        return "NanumGothic"
+
 # 📌 사용자 폰트 등록 함수
 @st.cache_data
 def register_font():
     font_path = os.path.join(os.getcwd(), 'custom_fonts', 'NanumSquareRoundR.ttf')  # 폰트 경로
+    default_font = get_default_font()
+
     if os.path.exists(font_path):
         fm.fontManager.addfont(font_path)  # Matplotlib에 폰트 등록
         fm._load_fontmanager(try_read_cache=False)  # 캐시 무시하고 강제 로드
         rc('font', family='NanumSquareRoundR')  # Matplotlib에서 한글 폰트 적용
-        print("✅ 한글 폰트가 정상적으로 등록되었습니다!")
+        print("✅ NanumSquareRoundR 폰트가 정상적으로 등록되었습니다!")
     else:
-        st.warning("⚠️ 사용자 지정 폰트를 찾을 수 없습니다. 기본 폰트가 사용됩니다.")
-        rc('font', family='Malgun Gothic')  # 기본 윈도우 한글 폰트
+        st.warning(f"⚠️ NanumSquareRoundR 폰트를 찾을 수 없습니다. 기본 폰트({default_font})를 사용합니다.")
+        rc('font', family=default_font)  # OS별 기본 폰트 적용
 
 def main():
     register_font()  # 한글 폰트 적용
@@ -99,9 +112,10 @@ def main():
         ax.plot(range(1, max_k + 1), wcss, marker='o', linestyle='--', color='b')
 
         # ✅ 한글 깨짐 방지를 위한 폰트 직접 지정
-        ax.set_xlabel('클러스터 개수 (k)', fontsize=12, fontweight='bold', fontname='NanumSquareRoundR')
-        ax.set_ylabel('WCSS 값', fontsize=12, fontweight='bold', fontname='NanumSquareRoundR')
-        ax.set_title('엘보우 메서드', fontsize=14, fontweight='bold', fontname='NanumSquareRoundR')
+        default_font = get_default_font()
+        ax.set_xlabel('클러스터 개수 (k)', fontsize=12, fontweight='bold', fontname=default_font)
+        ax.set_ylabel('WCSS 값', fontsize=12, fontweight='bold', fontname=default_font)
+        ax.set_title('엘보우 메서드', fontsize=14, fontweight='bold', fontname=default_font)
 
         st.pyplot(fig)
 
