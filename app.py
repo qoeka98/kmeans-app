@@ -10,16 +10,6 @@ import matplotlib.pyplot as plt
 import os
 import matplotlib.font_manager as fm
 
-def register_font():
-    font_path = os.path.join(os.getcwd(), 'custom_fonts', 'NanumSquareRoundR.ttf')
-    
-    if os.path.exists(font_path):
-        fm.fontManager.addfont(font_path)  # 폰트 등록
-        rc('font', family='NanumSquareRoundR')  # 한글 폰트 적용
-    else:
-        print("⚠️ 폰트 파일이 존재하지 않습니다. 경로를 확인하세요:", font_path)
-
-register_font()
 @st.cache_data
 def fontRegistered():
     font_dirs = [os.getcwd() + '/custom_fonts']
