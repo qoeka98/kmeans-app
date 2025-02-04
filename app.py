@@ -86,8 +86,8 @@ def main():
         # WCSS 그래프 출력
         fig1, ax = plt.subplots()
         ax.plot(range(1, max_k + 1), wcss, marker='o', linestyle='--', color='b')
-        ax.set_xlabel('Number of Clusters (k)')
-        ax.set_ylabel('WCSS')
+        ax.set_xlabel('클러스터 갯수')
+        ax.set_ylabel('WCSS값')
         ax.set_title('WCSS vs. Number of Clusters')
 
         st.pyplot(fig1)
