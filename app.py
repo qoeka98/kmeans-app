@@ -6,39 +6,10 @@ from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from sklearn.impute import SimpleImputer
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
-import os
-import platform
-import matplotlib.font_manager as fm
 
-plt.rcParams['axes.unicode_minus'] = False  # 음수 기호 깨짐 방지
-
-# 📌 운영체제(OS)별 기본 한글 폰트 지정
-def get_default_font():
-    system_name = platform.system()
-    if system_name == "Windows":
-        return "Malgun Gothic"
-    elif system_name == "Darwin":  # macOS
-        return "AppleGothic"
-    else:  # Linux (Ubuntu 등)
-        return "NanumGothic"
-
-# 📌 사용자 폰트 등록 함수
-@st.cache_data
-def register_font():
-    font_path = os.path.join(os.getcwd(), 'custom_fonts', 'NanumSquareRoundR.ttf')  # 사용자 지정 폰트 경로
-    default_font = get_default_font()
-
-    if os.path.exists(font_path):
-        fm.fontManager.addfont(font_path)  # Matplotlib에 폰트 등록
-        fm._load_fontmanager(try_read_cache=False)  # 폰트 캐시 강제 업데이트
-        plt.rcParams["font.family"] = "NanumSquareRoundR"  # Matplotlib 기본 폰트 변경
-        print("✅ NanumSquareRoundR 폰트가 적용되었습니다!")
-    else:
-        st.warning(f"⚠️ NanumSquareRoundR 폰트를 찾을 수 없습니다. 기본 폰트({default_font})가 사용됩니다.")
-        plt.rcParams["font.family"] = default_font  # 운영체제별 기본 한글 폰트 적용
 
 def main():
-    register_font()  # 한글 폰트 적용
+    
     st.title('K-Means 클러스터링 앱')
 
     # 1. CSV 파일 업로드
