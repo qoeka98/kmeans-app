@@ -19,28 +19,17 @@ import os
 import matplotlib.font_manager as fm
 
 @st.cache_data
-def register_font():
-    font_path = "NanumGothic.ttf"  # 🚀 NanumGothic.ttf 파일을 프로젝트에 업로드해야 함
-    if os.path.exists(font_path):
-        font_prop = fm.FontProperties(fname=font_path)  # 폰트 프로퍼티 생성
-        fm.fontManager.addfont(font_path)  # Matplotlib에 폰트 등록
-        fm._load_fontmanager(try_read_cache=False)  # 폰트 캐시 강제 업데이트
-        plt.rcParams["font.family"] = font_prop.get_name()  # Matplotlib에서 강제 적용
-        st.success(f"✅ 한글 폰트 적용 완료: {font_prop.get_name()}")
-    else:
-        st.warning("⚠️ NanumGothic.ttf 폰트가 없습니다. 기본 폰트 사용")
-        if platform.system() == 'Windows':
-            plt.rcParams["font.family"] = "Malgun Gothic"
-        elif platform.system() == 'Darwin':
-            plt.rcParams["font.family"] = "AppleGothic"
-        else:
-            plt.rcParams["font.family"] = "DejaVu Sans"
+def fontRegistered():
+    font_dirs = [os.getcwd() + '/custom_fonts']
+    font_files = fm.findSystemFonts(fontpaths=font_dirs)
+    for font_file in font_files:
+        fm.fontManager.addfont(font_file)
+    fm._load_fontmanager(try_read_cache=False)
 
 
 
 def main():
-    
-
+    fontRegistered()
     plt.rc('font', family='NanumGothic')
     
     st.title('K-Means 클러스터링 앱')
