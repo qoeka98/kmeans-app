@@ -22,7 +22,7 @@ def fontRegistered():
 def main():
     
     fontRegistered()
-    plt.rc('font', family='NanumSquareRoundR.ttf')
+    plt.rc('font', family='NanumSquareRoundR')
 
     st.title('K-Means Clustering App')
 
@@ -100,11 +100,11 @@ def main():
             wcss.append(kmeans.inertia_)
 
         # WCSS 그래프 출력
-        fig1, ax = plt.subplots()
-        ax.plot(range(1, max_k + 1), wcss, marker='o', linestyle='--', color='b')
-        ax.set_xlabel('Number of Clusters (k)')
-        ax.set_ylabel('WCSS값')
-        ax.set_title('앨보우메서드')
+        fig1 = plt.figure()
+        plt.plot(range(1, max_k + 1), wcss, marker='o', linestyle='--', color='b')
+        plt.set_xlabel('Number of Clusters (k)')
+        plt.set_ylabel('WCSS값')
+        plt.set_title('앨보우메서드')
 
         st.pyplot(fig1)
 
