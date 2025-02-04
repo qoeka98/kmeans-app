@@ -30,6 +30,7 @@ def fontRegistered():
 
 def main():
     fontRegistered()
+
     plt.rc('font', family='NanumGothic')
     
     st.title('K-Means 클러스터링 앱')
