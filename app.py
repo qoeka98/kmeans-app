@@ -22,7 +22,7 @@ def fontRegistered():
 def main():
     
     fontRegistered()
-    plt.rc('font', family='NanumSquareRoundR')
+    plt.rc('font', family='NanumSquareRoundR.ttf')
 
     st.title('K-Means Clustering App')
 
