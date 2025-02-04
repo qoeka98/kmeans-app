@@ -1,3 +1,4 @@
+
 import pandas as pd
 import streamlit as st
 from pandas.api.types import is_integer_dtype, is_float_dtype, is_object_dtype
@@ -5,15 +6,13 @@ from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from sklearn.impute import SimpleImputer
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
-
 import os
 import platform
 import matplotlib.font_manager as fm
-from matplotlib import rc
 
-plt.rcParams['axes.unicode_minus'] = False  # 마이너스 기호 깨짐 방지
+plt.rcParams['axes.unicode_minus'] = False  # 음수 기호 깨짐 방지
 
-# 📌 OS별 기본 한글 폰트 지정
+# 📌 운영체제(OS)별 기본 한글 폰트 지정
 def get_default_font():
     system_name = platform.system()
     if system_name == "Windows":
@@ -26,17 +25,17 @@ def get_default_font():
 # 📌 사용자 폰트 등록 함수
 @st.cache_data
 def register_font():
-    font_path = os.path.join(os.getcwd(), 'custom_fonts', 'NanumSquareRoundR.ttf')  # 폰트 경로
+    font_path = os.path.join(os.getcwd(), 'custom_fonts', 'NanumSquareRoundR.ttf')  # 사용자 지정 폰트 경로
     default_font = get_default_font()
 
     if os.path.exists(font_path):
         fm.fontManager.addfont(font_path)  # Matplotlib에 폰트 등록
-        fm._load_fontmanager(try_read_cache=False)  # 캐시 무시하고 강제 로드
-        plt.rcParams["font.family"] = "NanumSquareRoundR"  # 폰트 강제 설정
-        print("✅ NanumSquareRoundR 폰트가 정상적으로 등록되었습니다!")
+        fm._load_fontmanager(try_read_cache=False)  # 폰트 캐시 강제 업데이트
+        plt.rcParams["font.family"] = "NanumSquareRoundR"  # Matplotlib 기본 폰트 변경
+        print("✅ NanumSquareRoundR 폰트가 적용되었습니다!")
     else:
-        st.warning(f"⚠️ NanumSquareRoundR 폰트를 찾을 수 없습니다. 기본 폰트({default_font})를 사용합니다.")
-        plt.rcParams["font.family"] = default_font  # OS별 기본 폰트 적용
+        st.warning(f"⚠️ NanumSquareRoundR 폰트를 찾을 수 없습니다. 기본 폰트({default_font})가 사용됩니다.")
+        plt.rcParams["font.family"] = default_font  # 운영체제별 기본 한글 폰트 적용
 
 def main():
     register_font()  # 한글 폰트 적용
@@ -53,7 +52,7 @@ def main():
         st.info('NaN 값이 있는 행을 삭제합니다.')
         df.dropna(inplace=True)
 
-        # 3. 유저가 컬럼을 선택할 수 있도록 함
+        # 3. 컬럼 선택
         st.info('K-Means 클러스터링에 사용할 컬럼을 선택해주세요.')
         selected_columns = st.multiselect('컬럼 선택', df.columns)
 
@@ -117,6 +116,22 @@ def main():
         ax.set_title('엘보우 메서드', fontsize=14, fontweight='bold')
 
         st.pyplot(fig)
+
+        # 7. 클러스터 개수 선택
+        st.subheader("클러스터 개수 선택")
+        k = st.number_input('숫자 입력', min_value=2, max_value=max_k)
+
+        # 8. KMeans 실행
+        df_new.dropna(inplace=True)
+        kmeans = KMeans(n_clusters=k, random_state=4, n_init='auto')
+        cluster_labels = kmeans.fit_predict(df_new)
+
+        df = df.loc[df_new.index]  # 인덱스 동기화
+        df['Group'] = cluster_labels
+
+        st.success("✅ 클러스터링 완료!")
+        st.subheader("📌 클러스터링 결과 데이터")
+        st.dataframe(df)
 
 if __name__ == '__main__':
     main()
