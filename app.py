@@ -13,7 +13,23 @@ if platform.system() == 'Windows':
     plt.rcParams['font.family'] = 'Malgun Gothic'
     plt.rcParams['axes.unicode_minus'] = False
 
+    #한글이면 폰트 설치 작업을 해줘야한다
+import os
+import matplotlib.font_manager as fm
+
+@st.cache_data
+def fontRegistered():
+    font_dirs = [os.getcwd() + '/custom_fonts']
+    font_files = fm.findSystemFonts(fontpaths=font_dirs)
+    for font_file in font_files:
+        fm.fontManager.addfont(font_file)
+    fm._load_fontmanager(try_read_cache=False)
+
+
+
 def main():
+    fontRegistered()
+    plt.rc('font',family='MaruBuri-Bold.otf')
     st.title('K-Means Clustering App')
 
     # 1. CSV 파일 업로드
