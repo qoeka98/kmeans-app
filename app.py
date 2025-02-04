@@ -9,6 +9,11 @@ import matplotlib.pyplot as plt
 
 import os
 import matplotlib.font_manager as fm
+import platform
+from matplotlib import font_manager, rc
+plt.rcParams['axes.unicode_minus'] = False
+if platform.system() == 'Linux':
+    rc('font', family='NanumGothic')
 
 @st.cache_data
 def fontRegistered():
