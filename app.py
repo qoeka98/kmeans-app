@@ -6,33 +6,39 @@ from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer  # NaN 처리용
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
-import matplotlib.pyplot as plt
 import platform
-if platform.system() == 'Windows':
-    plt.rcParams['font.family'] = 'Malgun Gothic'
-    plt.rcParams['axes.unicode_minus'] = False
-
-# 글꼴 설치 os 시작 ---------------
 import os
 import matplotlib.font_manager as fm
 
-@st.cache_data
-def fontRegistered():
-    font_dirs = [os.getcwd() + '/custom_fonts']
-    font_files = fm.findSystemFonts(fontpaths=font_dirs)
-    for font_file in font_files:
-        fm.fontManager.addfont(font_file)
-    fm._load_fontmanager(try_read_cache=False)
-# 글꼴 설치 os 끝 ---------------
+# ✅ 한글 폰트 설정
+def set_korean_font():
+    system_name = platform.system()
+    
+    if system_name == 'Windows':
+        plt.rcParams['font.family'] = 'Malgun Gothic'  # 윈도우 기본 한글 폰트
+    elif system_name == 'Darwin':  # macOS
+        plt.rcParams['font.family'] = 'AppleGothic'
+    elif system_name == 'Linux':  # Linux 또는 Streamlit Cloud 환경
+        plt.rcParams['font.family'] = 'NanumGothic'
+    plt.rcParams['axes.unicode_minus'] = False  # 음수 기호 깨짐 방지
 
+# ✅ 사용자 폰트 등록
+def register_custom_font(font_path):
+    if os.path.exists(font_path):
+        font_name = fm.FontProperties(fname=font_path).get_name()
+        plt.rcParams['font.family'] = font_name
+        print(f"✅ 사용자 지정 폰트 적용됨: {font_name}")
+    else:
+        print("❌ 폰트 파일을 찾을 수 없습니다.")
 
+# ✅ OS에 따라 한글 폰트 설정
+set_korean_font()
 
+# ✅ 커스텀 폰트가 있으면 적용
+register_custom_font("custom_fonts/MaruBuri-Bold.ttf")
 
 def main():
-    fontRegistered()
-    plt.rc('font', family='NMaruBuri-Bold')
-
-    
+    st.title('K-Means 클러스터링 앱')
 
     # 1. CSV 파일 업로드
     file = st.file_uploader('CSV 파일 업로드', type=['csv'])
@@ -49,7 +55,7 @@ def main():
         st.info('K-Means 클러스터링에 사용할 컬럼을 선택해주세요.')
         selected_columns = st.multiselect('컬럼 선택', df.columns)
 
-        df_new = pd.DataFrame(index=df.index)  #  df와 같은 인덱스 유지
+        df_new = pd.DataFrame(index=df.index)  # ✅ df와 같은 인덱스 유지
 
         # 4. 컬럼 타입 확인 및 변환
         for column in selected_columns:
@@ -61,53 +67,46 @@ def main():
                     encoder = LabelEncoder()
                     df_new[column] = encoder.fit_transform(df[column])
                 else:
-                    #  OneHotEncoder 적용
+                    # ✅ OneHotEncoder 적용
                     encoder = OneHotEncoder(sparse_output=False)
                     transformed_data = encoder.fit_transform(df[[column]])
 
-                    # `get_feature_names_out()`을 사용하여 컬럼명 가져오기
+                    # ✅ `get_feature_names_out()`을 사용하여 컬럼명 가져오기
                     column_names = encoder.get_feature_names_out([column])
 
-                    # 변환된 데이터를 데이터프레임으로 변환 후 추가
+                    # ✅ 변환된 데이터를 데이터프레임으로 변환 후 추가
                     df_transformed = pd.DataFrame(transformed_data, columns=column_names, index=df.index)
                     df_new = pd.concat([df_new, df_transformed], axis=1)
 
             else:
                 st.text(f'⚠️ {column} 컬럼은 K-Means에 사용할 수 없어 제외됩니다.')
 
-        #  선택한 컬럼이 없는 경우 에러 메시지 출력 후 종료
+        # ✅ 선택한 컬럼이 없는 경우 에러 메시지 출력 후 종료
         if df_new.empty:
             st.error("⚠️ 데이터프레임이 비어 있습니다. 컬럼을 선택하세요.")
             return
 
-        #  모든 데이터를 숫자형으로 변환
+        # ✅ 모든 데이터를 숫자형으로 변환
         df_new = df_new.apply(pd.to_numeric, errors='coerce')
 
         st.info('K-Means를 수행하기 위한 변환된 데이터 프레임입니다.')
         st.dataframe(df_new)
 
-        #  NaN 값 처리: 평균값으로 대체
+        # ✅ NaN 값 처리: 평균값으로 대체
         imputer = SimpleImputer(strategy='mean')  
         df_new[:] = imputer.fit_transform(df_new)
 
-        st.info('NaN 값이 처리된 데이터 프레임')
-        st.dataframe(df_new.isna().sum())  # NaN이 완전히 사라졌는지 확인
-
-        # 5. 최적의 k값을 찾기 위한 WCSS 계산
+        # ✅ WCSS 계산 및 그래프 그리기
         st.subheader('최적의 K값을 찾기 위해 WCSS를 계산합니다.')
         
-        # 데이터 개수에 따라 최대 k값 설정
-        st.text(f'데이터 개수: {df_new.shape[0]}개')
         max_k = st.slider('K값 선택 (최대 그룹 개수)', min_value=2, max_value=min(10, df_new.shape[0]))
 
-        # WCSS 계산
         wcss = []
         for k in range(1, max_k + 1):
             kmeans = KMeans(n_clusters=k, random_state=4, n_init='auto')
             kmeans.fit(df_new)
             wcss.append(kmeans.inertia_)
 
-        # WCSS 그래프 출력
         fig1, ax = plt.subplots()
         ax.plot(range(1, max_k + 1), wcss, marker='o', linestyle='--', color='b')
         ax.set_xlabel('클러스터 갯수')
@@ -120,19 +119,9 @@ def main():
 
         k = st.number_input('숫자 입력', min_value=2, max_value=max_k)
 
-        #  NaN 값 제거 (필수)
         df_new.dropna(inplace=True)
-
-        #  df_new와 df의 인덱스 동기화 확인
-        st.text(f"df_new 데이터 개수: {df_new.shape[0]}, df 데이터 개수: {df.shape[0]}")
-        
-        #  KMeans 모델 생성 및 클러스터링 수행
         kmeans = KMeans(n_clusters=k, random_state=4, n_init='auto')
-        cluster_labels = kmeans.fit_predict(df_new)
-
-        #  df_new와 같은 인덱스를 가진 df에 Group 컬럼 추가
-        df = df.loc[df_new.index]  # df와 df_new의 인덱스를 동기화
-        df['Group'] = cluster_labels
+        df['Group'] = kmeans.fit_predict(df_new)
 
         st.info('그룹 정보가 저장되었습니다.')
         st.dataframe(df)
