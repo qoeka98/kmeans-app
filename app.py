@@ -102,9 +102,9 @@ def main():
         # WCSS 그래프 출력
         fig1 = plt.figure()
         plt.plot(range(1, max_k + 1), wcss, marker='o', linestyle='--', color='b')
-        plt.set_xlabel('Number of Clusters (k)')
-        plt.set_ylabel('WCSS값')
-        plt.set_title('앨보우메서드')
+        plt.xlabel('Number of Clusters (k)')
+        plt.ylabel('WCSS값')
+        plt.title('앨보우메서드')
 
         st.pyplot(fig1)
 
