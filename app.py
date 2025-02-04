@@ -27,7 +27,7 @@ def fontRegistered():
 def main():
     
     fontRegistered()
-    plt.rc('font', family='MaruBuri-Bold')
+    plt.rc('font', family='NanumSquareRoundR')
 
     st.title('K-Means Clustering App')
 
