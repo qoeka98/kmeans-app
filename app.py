@@ -8,7 +8,11 @@ from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 import matplotlib.pyplot as plt
 import platform
+if platform.system() == 'Windows':
+    plt.rcParams['font.family'] = 'Malgun Gothic'
+    plt.rcParams['axes.unicode_minus'] = False
 
+# 글꼴 설치 os 시작 ---------------
 import os
 import matplotlib.font_manager as fm
 
@@ -19,17 +23,16 @@ def fontRegistered():
     for font_file in font_files:
         fm.fontManager.addfont(font_file)
     fm._load_fontmanager(try_read_cache=False)
+# 글꼴 설치 os 끝 ---------------
 
-
-
-    #한글이면 폰트 설치 작업을 해줘야한다
 
 
 
 def main():
     fontRegistered()
-    plt.rc('font',family='MaruBuri-Bold')
-    st.title('K-Means Clustering App')
+    plt.rc('font', family='NanumBarunGothic')
+
+    
 
     # 1. CSV 파일 업로드
     file = st.file_uploader('CSV 파일 업로드', type=['csv'])
