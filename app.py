@@ -30,7 +30,7 @@ def fontRegistered():
 
 def main():
     fontRegistered()
-    plt.rc('font', family='NanumBarunGothic')
+    plt.rc('font', family='NMaruBuri-Bold')
 
     
 
