@@ -21,9 +21,6 @@ def fontRegistered():
     fm._load_fontmanager(try_read_cache=False)
 
 
-if platform.system() == 'Windows':
-    plt.rcParams['font.family'] = 'Malgun Gothic'
-    plt.rcParams['axes.unicode_minus'] = False
 
     #한글이면 폰트 설치 작업을 해줘야한다
 
@@ -112,7 +109,7 @@ def main():
         ax.plot(range(1, max_k + 1), wcss, marker='o', linestyle='--', color='b')
         ax.set_xlabel('클러스터 갯수')
         ax.set_ylabel('WCSS값')
-        ax.set_title('WCSS vs. Number of Clusters')
+        ax.set_title('앨보우메서드')
 
         st.pyplot(fig1)
 
