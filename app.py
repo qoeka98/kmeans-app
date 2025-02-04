@@ -28,7 +28,7 @@ def fontRegistered():
 
 def main():
     fontRegistered()
-    plt.rc('font',family='MaruBuri-Bold.otf')
+    plt.rc('font',family='MaruBuri-Bold')
     st.title('K-Means Clustering App')
 
     # 1. CSV 파일 업로드
